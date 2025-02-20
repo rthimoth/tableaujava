@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.tableau.HelloController">
+  <padding>
+    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+  </padding>
+
+<Label text="Tableau récapitulatif des dépenses" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>  
+
+  <TableView fx:id="expenseTable">
+    <columns>
+      <TableColumn text="Période" fx:id="periodeColumn"/>
+      <TableColumn text="Total" fx:id="totalColumn"/>
+      <TableColumn text="Logement" fx:id="logementColumn"/>
+      <TableColumn text="Nourriture" fx:id="nourritureColumn"/>
+      <TableColumn text="Sorties" fx:id="sortiesColumn"/>
+      <TableColumn text="Voiture/Transport" fx:id="voitureTransportColumn"/>
+      <TableColumn text="Voyage" fx:id="voyageColumn"/>
+      <TableColumn text="Impôts" fx:id="impotsColumn"/>
+      <TableColumn text="Autres" fx:id="autresColumn"/>
+    </columns>
+  </TableView>
+</VBox>
