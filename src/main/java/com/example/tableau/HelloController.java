@@ -32,6 +32,8 @@ public class HelloController {
 
     @FXML
     public void initialize() {
+        expenseTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         periodeColumn.setCellValueFactory(new PropertyValueFactory<>("periode"));
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
         logementColumn.setCellValueFactory(new PropertyValueFactory<>("logement"));
