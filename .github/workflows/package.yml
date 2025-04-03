@@ -17,23 +17,20 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '17'
           distribution: 'temurin'
           
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot
+
       - name: Make gradlew executable
-        if: runner.os != 'Windows'  # Uniquement pour Linux et macOS
+        if: runner.os != 'Windows'
         run: chmod +x ./gradlew
         
-      - name: Build with Gradle (Windows)
-        if: runner.os == 'Windows'
-        run: ./gradlew createInstaller --info
-        
-      - name: Build with Gradle (Linux)
-        if: runner.os == 'Linux'
-        run: ./gradlew createInstaller --info
-        
-      - name: Build with Gradle (macOS)
-        if: runner.os == 'macOS'
+      - name: Build with Gradle
         run: ./gradlew createInstaller --info
         
       - name: Upload Windows installer
