@@ -14,8 +14,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '23'
           distribution: 'temurin'
+      - name: Make gradlew executable
+        run: git update-index --chmod=+x gradlew
       - name: Build with Gradle
         run: ./gradlew createInstaller
       - name: Upload Windows installer
@@ -31,8 +33,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '23'
           distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Build with Gradle
         run: ./gradlew createInstaller
       - name: Upload Linux installer
@@ -48,8 +52,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '23'
           distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Build with Gradle
         run: ./gradlew createInstaller
       - name: Upload macOS installer
