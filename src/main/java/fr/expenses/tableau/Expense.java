@@ -3,6 +3,7 @@ package fr.expenses.tableau;
 import java.util.Objects;
 
 public class Expense {
+    private int id; // Identifiant unique en base de données
     private String periode;
     private double total;
     private double logement;
@@ -16,6 +17,7 @@ public class Expense {
     // Constructeur
     public Expense(String periode, double total, double logement, double nourriture, double sorties,
                    double voitureTransport, double voyage, double impots, double autres) {
+        this.id = 0; // Par défaut, l'ID est 0 (non défini)
         this.periode = periode;
         this.total = total;
         this.logement = logement;
@@ -28,6 +30,14 @@ public class Expense {
     }
 
     // Getters et Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getPeriode() {
         return periode;
     }

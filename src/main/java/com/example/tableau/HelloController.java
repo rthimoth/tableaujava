@@ -17,6 +17,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,5 +127,60 @@ public class HelloController {
         } catch (Exception e) {
             logger.error("Erreur lors de la mise à jour de la table des dépenses", e);
         }
+    }
+
+    @FXML
+    private void onTableauMenuClick() {
+        logger.info("Navigation vers la page Tableau");
+        // Déjà sur cette page, ne rien faire
+    }
+
+    @FXML
+    private void onStatsMenuClick() {
+        logger.info("Navigation vers la page Statistiques");
+        try {
+            // Charger la vue des statistiques
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("stats-view.fxml"));
+            Parent statsView = loader.load();
+            
+            // Récupérer la scène actuelle
+            Scene currentScene = expenseTable.getScene();
+            
+            // Remplacer le contenu de la scène
+            currentScene.setRoot(statsView);
+            
+            // Obtenir le controller des statistiques et initialiser les données
+            StatsController statsController = loader.getController();
+            statsController.initData(getExpenses());
+            
+            logger.info("Page de statistiques chargée avec succès");
+        } catch (IOException e) {
+            logger.error("Erreur lors du chargement de la page de statistiques", e);
+            showErrorAlert("Erreur de navigation", "Impossible de charger la page des statistiques");
+        }
+    }
+
+    @FXML
+    private void onAboutMenuClick() {
+        logger.info("Ouverture de la boîte de dialogue À propos");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("À propos");
+        alert.setHeaderText("Expenses Manager");
+        alert.setContentText("Application de gestion des dépenses\nVersion 1.0\n© 2023");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void onQuitMenuClick() {
+        logger.info("Fermeture de l'application");
+        Platform.exit();
+    }
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

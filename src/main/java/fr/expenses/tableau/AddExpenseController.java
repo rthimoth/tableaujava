@@ -64,12 +64,26 @@ public class AddExpenseController {
             
             logger.info("Nouvelle dépense créée pour la période: {}", periode);
             
-            // Ajout de la dépense dans la liste observable, ce qui mettra à jour le TableView
-            expenseList.add(newExpense);
-
-            // Ferme la fenêtre modale après l'enregistrement
-            stage.close();
-            logger.debug("Fenêtre d'ajout fermée après enregistrement");
+            // Sauvegarder dans la base de données
+            boolean saved = DatabaseManager.saveExpense(newExpense);
+            
+            if (saved) {
+                // Ajout de la dépense dans la liste observable, ce qui mettra à jour le TableView
+                expenseList.add(newExpense);
+                
+                // Ferme la fenêtre modale après l'enregistrement
+                stage.close();
+                logger.info("Dépense sauvegardée avec succès et fenêtre fermée");
+            } else {
+                logger.error("Échec de la sauvegarde en base de données");
+                
+                // Afficher une alerte pour informer l'utilisateur
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur de sauvegarde");
+                alert.setHeaderText(null);
+                alert.setContentText("Impossible de sauvegarder la dépense. Veuillez réessayer.");
+                alert.showAndWait();
+            }
         } catch (NumberFormatException e) {
             logger.error("Erreur de saisie lors de l'ajout d'une dépense", e);
             
