@@ -4,8 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.collections.ObservableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddExpenseController {
+    private static final Logger logger = LoggerFactory.getLogger(AddExpenseController.class);
 
     @FXML
     private TextField periodeField;
@@ -39,7 +42,15 @@ public class AddExpenseController {
 
     @FXML
     private void onSaveExpense() {
+        logger.info("Tentative d'enregistrement d'une nouvelle dépense");
         try {
+            // Validation des champs
+            if (periodeField.getText().isEmpty()) {
+                logger.warn("Tentative d'enregistrement avec un champ période vide");
+                // Votre code de gestion d'erreur
+                return;
+            }
+
             // Récupération des valeurs saisies dans les champs
             String periode = periodeField.getText();
             double total = Double.parseDouble(totalField.getText());
@@ -57,11 +68,22 @@ public class AddExpenseController {
             // Ajout de la dépense dans la liste observable, ce qui mettra à jour le TableView
             expenseList.add(newExpense);
 
+            logger.info("Nouvelle dépense enregistrée avec succès pour la période: {}", periode);
+            
             // Ferme la fenêtre modale après l'enregistrement
             stage.close();
         } catch (NumberFormatException e) {
-            System.err.println("Erreur de saisie : " + e.getMessage());
+            logger.error("Erreur de saisie : " + e.getMessage());
             // Ici, vous pouvez ajouter une alerte afin d'informer l'utilisateur en cas d'erreur de saisie
+        } catch (Exception e) {
+            logger.error("Erreur lors de l'enregistrement de la dépense", e);
         }
+    }
+
+    @FXML
+    protected void onCancelButtonClick() {
+        logger.debug("Annulation de l'ajout de dépense");
+        Stage stage = (Stage) periodeField.getScene().getWindow();
+        stage.close();
     }
 }

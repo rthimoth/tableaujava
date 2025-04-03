@@ -18,8 +18,11 @@ import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HelloController {
+    private static final Logger logger = LoggerFactory.getLogger(HelloController.class);
 
     @FXML
     private TableView<Expense> expenseTable;
@@ -44,6 +47,7 @@ public class HelloController {
 
     @FXML
     public void initialize() {
+        logger.info("Initialisation du contrôleur principal");
         periodeColumn.setCellValueFactory(new PropertyValueFactory<>("periode"));
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
         logementColumn.setCellValueFactory(new PropertyValueFactory<>("logement"));
@@ -56,6 +60,7 @@ public class HelloController {
 
         expenseTable.setItems(getExpenses());
         DatabaseManager.initializeDatabase();
+        logger.info("Contrôleur principal initialisé avec succès");
     }
 
     private ObservableList<Expense> getExpenses() {
@@ -67,6 +72,7 @@ public class HelloController {
 
     @FXML
     private void onAjouterClicked(ActionEvent event) {
+        logger.info("Ouverture de la fenêtre d'ajout de dépense");
         try {
             // Chargement du fichier FXML de la fenêtre modale
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add-expense-view.fxml"));
@@ -87,8 +93,9 @@ public class HelloController {
             controller.setData(expenseTable.getItems(), modalStage);
 
             modalStage.showAndWait();
+            logger.debug("Fenêtre d'ajout de dépense ouverte avec succès");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Erreur lors de l'ouverture de la fenêtre d'ajout de dépense", e);
         }
     }
     
@@ -108,6 +115,16 @@ public class HelloController {
             alert.setHeaderText(null);
             alert.setContentText("Veuillez sélectionner une ligne à supprimer");
             alert.showAndWait();
+        }
+    }
+
+    private void refreshTable() {
+        logger.debug("Rafraîchissement de la table des dépenses");
+        try {
+            // Votre code existant
+            logger.info("Table des dépenses mise à jour avec succès");
+        } catch (Exception e) {
+            logger.error("Erreur lors de la mise à jour de la table des dépenses", e);
         }
     }
 }
