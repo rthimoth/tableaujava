@@ -15,18 +15,13 @@ repositories {
 
 ext {
   junitVersion = '5.10.2'
-  javaVersion = System.getenv('GITHUB_ACTIONS') ? 17 : 23
 }
 
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(javaVersion)
-  }
-}
+sourceCompatibility = '23'
+targetCompatibility = '23'
 
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
-  options.release = javaVersion
 }
 
 application {
@@ -82,6 +77,7 @@ jlink {
     }
     if (currentOs.macOsX) {
       installerType = 'dmg'
+      installerOptions += ['--mac-sign']
       installerOptions += ['--icon', "${projectDir}/src/main/resources/fr/expenses/tableau/icon.png"]
     }
   }
