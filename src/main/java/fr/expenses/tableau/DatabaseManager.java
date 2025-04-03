@@ -15,9 +15,25 @@ import java.sql.Statement;
 public class DatabaseManager {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     
-    // Utiliser directement un chemin fixe pour la base de données
-    private static final String DB_PATH = System.getProperty("user.home") + File.separator + ".expenses-manager" + File.separator + "expenses.db";
-    private static final String DB_URL = "jdbc:sqlite:" + DB_PATH;
+    private static String getDbPath() {
+        String appDir;
+        String os = System.getProperty("os.name").toLowerCase();
+        
+        if (os.contains("win")) {
+            // Windows
+            appDir = System.getProperty("user.home") + File.separator + ".expenses-manager";
+        } else if (os.contains("mac")) {
+            // macOS
+            appDir = System.getProperty("user.home") + File.separator + ".expenses-manager";
+        } else {
+            // Linux et autres
+            appDir = System.getProperty("user.home") + File.separator + ".expenses-manager";
+        }
+        
+        return appDir + File.separator + "expenses.db";
+    }
+
+    private static final String DB_URL = "jdbc:sqlite:" + getDbPath();
 
     public static Connection getConnection() throws SQLException {
         logger.debug("Connexion à la base de données: {}", DB_URL);
@@ -27,7 +43,7 @@ public class DatabaseManager {
     public static void initializeDatabase() {
         // Créer le répertoire contenant la BDD si nécessaire
         try {
-            Path dbDirectory = Paths.get(DB_PATH).getParent();
+            Path dbDirectory = Paths.get(getDbPath()).getParent();
             if (!Files.exists(dbDirectory)) {
                 Files.createDirectories(dbDirectory);
                 logger.info("Répertoire de la base de données créé: {}", dbDirectory);
