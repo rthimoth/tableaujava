@@ -1,8 +1,10 @@
-module com.example.tableau {
+module fr.expenses.tableau {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
+    requires org.slf4j;
 
 
-    opens com.example.tableau to javafx.fxml;
-    exports com.example.tableau;
+    opens fr.expenses.tableau to javafx.fxml;
+    exports fr.expenses.tableau;
 }

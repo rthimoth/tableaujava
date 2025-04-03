@@ -6,8 +6,8 @@ plugins {
   id 'org.beryx.jlink' version '2.25.0'
 }
 
-group 'com.example'
-version '1.0-SNAPSHOT'
+group 'fr.expenses'
+version '1.0.0'
 
 repositories {
   mavenCentral()
@@ -25,8 +25,8 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-  mainModule = 'com.example.tableau'
-  mainClass = 'com.example.tableau.HelloApplication'
+  mainModule = 'fr.expenses.tableau'
+  mainClass = 'fr.expenses.tableau.HelloApplication'
 }
 
 javafx {
@@ -35,22 +35,59 @@ javafx {
 }
 
 dependencies {
-
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+  implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+  implementation 'org.slf4j:slf4j-api:2.0.9'
+  implementation 'ch.qos.logback:logback-classic:1.4.11'
 }
 
 test {
-useJUnitPlatform()}
+  useJUnitPlatform()
+}
 
 jlink {
-  imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
+  imageZip = project.file("${buildDir}/distributions/ExpensesManager-${javafx.platform.classifier}.zip")
   options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
   launcher {
-    name = 'app'
+    name = 'ExpensesManager'
+  }
+  
+  jpackage {
+    def currentOs = org.gradle.internal.os.OperatingSystem.current()
+    
+    imageOptions = []
+    installerOptions = []
+    installerName = 'ExpensesManager'
+    appVersion = project.version
+    
+    if (currentOs.windows) {
+      installerType = 'msi'
+      installerOptions += ['--win-dir-chooser', '--win-menu', '--win-shortcut']
+      installerOptions += ['--vendor', 'Expenses Manager']
+      installerOptions += ['--description', 'Gestionnaire de dépenses développé en JavaFX']
+      installerOptions += ['--copyright', 'Copyright (c) 2025']
+      installerOptions += ['--icon', "${projectDir}/src/main/resources/fr/expenses/tableau/icon.png"]
+    }
+    if (currentOs.linux) {
+      installerType = 'deb'
+      installerOptions += ['--linux-shortcut', '--linux-menu-group', 'Office']
+      installerOptions += ['--icon', "${projectDir}/src/main/resources/fr/expenses/tableau/icon.png"]
+    }
+    if (currentOs.macOsX) {
+      installerType = 'dmg'
+      installerOptions += ['--mac-sign']
+      installerOptions += ['--icon', "${projectDir}/src/main/resources/fr/expenses/tableau/icon.png"]
+    }
   }
 }
 
 jlinkZip {
   group = 'distribution'
+}
+
+task createInstaller(dependsOn: 'jpackage') {
+  group = 'distribution'
+  description = 'Génère un installateur pour le système courant'
 }

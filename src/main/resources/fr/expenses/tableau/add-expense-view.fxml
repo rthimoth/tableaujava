@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="fr.expenses.tableau.AddExpenseController"
+      alignment="CENTER" spacing="10">
+    <children>
+        <Label text="Ajouter une dépense" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <children>
+                <Label text="Période:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="periodeField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Total:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="totalField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Logement:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="logementField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Nourriture:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="nourritureField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Sorties:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="sortiesField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Voiture/Transport:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="voitureTransportField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <Label text="Voyage:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <TextField fx:id="voyageField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                <Label text="Impôts:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                <TextField fx:id="impotsField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+                <Label text="Autres:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                <TextField fx:id="autresField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+            </children>
+        </GridPane>
+        <Button text="Enregistrer" onAction="#onSaveExpense"/>
+    </children>
+</VBox>

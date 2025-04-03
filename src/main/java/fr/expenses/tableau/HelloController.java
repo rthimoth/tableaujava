@@ -1,4 +1,4 @@
-package com.example.tableau;
+package fr.expenses.tableau;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,9 +17,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class HelloController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(HelloController.class);
 
     @FXML
     private TableView<Expense> expenseTable;
@@ -44,6 +48,8 @@ public class HelloController {
 
     @FXML
     public void initialize() {
+        logger.info("Initialisation du contrôleur");
+        
         periodeColumn.setCellValueFactory(new PropertyValueFactory<>("periode"));
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
         logementColumn.setCellValueFactory(new PropertyValueFactory<>("logement"));
@@ -56,9 +62,12 @@ public class HelloController {
 
         expenseTable.setItems(getExpenses());
         DatabaseManager.initializeDatabase();
+        
+        logger.info("Tableau initialisé avec {} dépenses", expenseTable.getItems().size());
     }
 
     private ObservableList<Expense> getExpenses() {
+        logger.debug("Chargement des dépenses");
         return FXCollections.observableArrayList(
             new Expense("2020-01", 1000.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0),
             new Expense("2020-02", 1000.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0)
@@ -67,6 +76,7 @@ public class HelloController {
 
     @FXML
     private void onAjouterClicked(ActionEvent event) {
+        logger.info("Action: Ajout d'une nouvelle dépense");
         try {
             // Chargement du fichier FXML de la fenêtre modale
             FXMLLoader loader = new FXMLLoader(getClass().getResource("add-expense-view.fxml"));
@@ -87,8 +97,9 @@ public class HelloController {
             controller.setData(expenseTable.getItems(), modalStage);
 
             modalStage.showAndWait();
+            logger.debug("Fenêtre d'ajout fermée");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Erreur lors de l'ouverture de la fenêtre d'ajout", e);
         }
     }
     
@@ -99,9 +110,11 @@ public class HelloController {
         
         // Vérifier si un élément est sélectionné
         if (selectedExpense != null) {
+            logger.info("Suppression de la dépense pour la période: {}", selectedExpense.getPeriode());
             // Supprimer l'élément de la liste observable
             expenseTable.getItems().remove(selectedExpense);
         } else {
+            logger.warn("Tentative de suppression sans sélection");
             // Afficher une alerte si aucun élément n'est sélectionné
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
@@ -110,4 +123,4 @@ public class HelloController {
             alert.showAndWait();
         }
     }
-}
+} 
