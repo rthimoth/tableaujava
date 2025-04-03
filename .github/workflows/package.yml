@@ -7,55 +7,65 @@ on:
   workflow_dispatch:
 
 jobs:
-  package:
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+  package-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '23'
+          java-version: '17'
           distribution: 'temurin'
-          
-      - name: Install Linux dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fakeroot
-
       - name: Make gradlew executable
-        if: runner.os != 'Windows'
-        run: chmod +x ./gradlew
-        
+        run: git update-index --chmod=+x gradlew
       - name: Build with Gradle
-        run: ./gradlew createInstaller --info
-        
+        run: ./gradlew createInstaller
       - name: Upload Windows installer
-        if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: windows-installer
           path: build/jpackage/*.msi
-          
+
+  package-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew createInstaller
       - name: Upload Linux installer
-        if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
           name: linux-installer
           path: build/jpackage/*.deb
-          
+
+  package-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew createInstaller
       - name: Upload macOS installer
-        if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
           name: macos-installer
           path: build/jpackage/*.dmg
 
   create-release:
-    needs: package
+    needs: [package-windows, package-linux, package-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
