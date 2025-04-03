@@ -17,11 +17,25 @@ ext {
   junitVersion = '5.10.2'
 }
 
-sourceCompatibility = '23'
-targetCompatibility = '23'
+// Adapter en fonction de l'environnement
+if (System.getenv("CI") == "true") {
+  // Environnement CI (GitHub Actions)
+  sourceCompatibility = '17'
+  targetCompatibility = '17'
+} else {
+  // Environnement local
+  sourceCompatibility = '23'
+  targetCompatibility = '23'
+}
 
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
+  // Utiliser la même version que la source compatibility
+  if (System.getenv("CI") == "true") {
+    options.release = 17
+  } else {
+    options.release = 23
+  }
 }
 
 application {
@@ -77,7 +91,7 @@ jlink {
     }
     if (currentOs.macOsX) {
       installerType = 'dmg'
-      installerOptions += ['--mac-sign']
+      // Suppression de l'option '--mac-sign' qui nécessite un certificat
       installerOptions += ['--icon', "${projectDir}/src/main/resources/fr/expenses/tableau/icon.png"]
     }
   }
