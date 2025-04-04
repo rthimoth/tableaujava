@@ -23,6 +23,7 @@
             <items>
               <MenuItem text="Tableau" onAction="#onTableauMenuClick"/>
               <MenuItem text="Statistiques" onAction="#onStatsMenuClick"/>
+              <!-- <MenuItem text="Ajouter une dépense" onAction="#onAddExpenseMenuClick"/> -->
             </items>
           </Menu>
           <Menu text="Options">
