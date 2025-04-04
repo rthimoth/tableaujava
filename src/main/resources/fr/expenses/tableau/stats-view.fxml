@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.text.Font?>
@@ -23,16 +24,17 @@
         <menus>
           <Menu text="Navigation">
             <items>
-              <MenuItem text="Tableau" onAction="#onTableauMenuClick"/>
+              <MenuItem text="Tableau des dépenses" onAction="#onTableauMenuClick"/>
               <MenuItem text="Statistiques" onAction="#onStatsMenuClick"/>
+              <MenuItem text="Revenus" onAction="#onRevenusMenuClick"/>
             </items>
           </Menu>
-          <Menu text="Options">
+          <!-- <Menu text="Options">
             <items>
               <MenuItem text="À propos" onAction="#onAboutMenuClick"/>
               <MenuItem text="Quitter" onAction="#onQuitMenuClick"/>
             </items>
-          </Menu>
+          </Menu> -->
         </menus>
       </MenuBar>
     </VBox>
@@ -75,6 +77,22 @@
           </LineChart>
         </VBox>
       </HBox>
+      
+      <!-- Graphique de comparaison dépenses/revenus -->
+      <VBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+        <Label text="Dépenses vs Revenus" 
+               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #00598C;"/>
+        <HBox alignment="CENTER">
+          <BarChart fx:id="comparisonChart" legendVisible="true" prefHeight="250" prefWidth="800" maxWidth="800">
+            <xAxis>
+              <CategoryAxis label="Date"/>
+            </xAxis>
+            <yAxis>
+              <NumberAxis label="Montant"/>
+            </yAxis>
+          </BarChart>
+        </HBox>
+      </VBox>
     </VBox>
   </center>
 </BorderPane> 

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.BarChart;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -40,6 +41,9 @@ public class StatsController {
     
     @FXML
     private Label pieChartTitleLabel;
+    
+    @FXML
+    private BarChart<String, Number> comparisonChart;
 
     private ObservableList<Expense> expenses;
     private Map<String, Color> categoryColors;
@@ -123,6 +127,9 @@ public class StatsController {
         
         // Mettre à jour le graphique en lignes
         updateLineChart();
+        
+        // Mettre à jour le graphique de comparaison
+        updateComparisonChart();
     }
 
     private void updatePieChart() {
@@ -259,6 +266,44 @@ public class StatsController {
         logger.info("Graphique en lignes mis à jour");
     }
     
+    private void updateComparisonChart() {
+        logger.debug("Mise à jour du graphique de comparaison");
+        
+        if (expenses == null || expenses.isEmpty()) {
+            logger.warn("Aucune dépense disponible pour le graphique de comparaison");
+            return;
+        }
+        
+        // Vider le graphique
+        comparisonChart.getData().clear();
+        
+        // Récupérer les revenus
+        List<Income> incomes = DatabaseManager.getAllIncomes();
+        
+        // Séries pour les dépenses et les revenus
+        XYChart.Series<String, Number> expensesSeries = new XYChart.Series<>();
+        expensesSeries.setName("Dépenses");
+        
+        XYChart.Series<String, Number> incomesSeries = new XYChart.Series<>();
+        incomesSeries.setName("Revenus");
+        
+        // Ajouter les données des dépenses
+        for (Expense expense : expenses) {
+            expensesSeries.getData().add(new XYChart.Data<>(expense.getPeriode(), expense.getTotal()));
+        }
+        
+        // Ajouter les données des revenus
+        for (Income income : incomes) {
+            incomesSeries.getData().add(new XYChart.Data<>(income.getPeriode(), income.getTotal()));
+        }
+        
+        // Ajouter les séries au graphique
+        comparisonChart.getData().addAll(expensesSeries, incomesSeries);
+        
+        logger.info("Graphique de comparaison mis à jour avec {} dépenses et {} revenus", 
+                expenses.size(), incomes.size());
+    }
+    
     @FXML
     private void onTableauMenuClick() {
         logger.info("Navigation vers la page Tableau");
@@ -300,6 +345,27 @@ public class StatsController {
     private void onQuitMenuClick() {
         logger.info("Fermeture de l'application");
         Platform.exit();
+    }
+
+    @FXML
+    private void onRevenusMenuClick() {
+        logger.info("Navigation vers la page des revenus");
+        try {
+            // Charger la vue des revenus
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("income-view.fxml"));
+            Parent incomeView = loader.load();
+            
+            // Récupérer la scène actuelle
+            Scene currentScene = pieChartDepenses.getScene();
+            
+            // Remplacer le contenu de la scène
+            currentScene.setRoot(incomeView);
+            
+            logger.info("Page des revenus chargée avec succès");
+        } catch (IOException e) {
+            logger.error("Erreur lors du chargement de la page des revenus", e);
+            showErrorAlert("Erreur de navigation", "Impossible de charger la page des revenus");
+        }
     }
     
     private void showErrorAlert(String title, String message) {

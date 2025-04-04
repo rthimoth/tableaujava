@@ -215,6 +215,27 @@ public class HelloController {
         Platform.exit();
     }
 
+    @FXML
+    private void onRevenusMenuClick() {
+        logger.info("Navigation vers la page des revenus");
+        try {
+            // Charger la vue des revenus
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("income-view.fxml"));
+            Parent incomeView = loader.load();
+            
+            // Récupérer la scène actuelle
+            Scene currentScene = expenseTable.getScene();
+            
+            // Remplacer le contenu de la scène
+            currentScene.setRoot(incomeView);
+            
+            logger.info("Page des revenus chargée avec succès");
+        } catch (IOException e) {
+            logger.error("Erreur lors du chargement de la page des revenus", e);
+            showErrorAlert("Erreur de navigation", "Impossible de charger la page des revenus");
+        }
+    }
+
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

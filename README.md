@@ -11,8 +11,8 @@ Application de gestion des dépenses développée avec JavaFX.
 
 ## Prérequis
 
-- Java 17 ou supérieur
-- Gradle 7.0 ou supérieur (pour le développement)
+- Java 23 ou supérieur
+- Gradle 8.0 ou supérieur (pour le développement)
 
 ## Installation
 

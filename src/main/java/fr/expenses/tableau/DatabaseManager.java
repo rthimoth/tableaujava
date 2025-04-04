@@ -65,7 +65,8 @@ public class DatabaseManager {
         
         logger.info("Initialisation de la base de données: {}", DB_URL);
         
-        String sql = "CREATE TABLE IF NOT EXISTS expenses ("
+        // Création de la table des dépenses
+        String sqlExpenses = "CREATE TABLE IF NOT EXISTS expenses ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "periode TEXT NOT NULL, "
                 + "total REAL, "
@@ -77,8 +78,22 @@ public class DatabaseManager {
                 + "impots REAL, "
                 + "autres REAL"
                 + ");";
+        
+        // Création de la table des revenus
+        String sqlIncomes = "CREATE TABLE IF NOT EXISTS incomes ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "periode TEXT NOT NULL, "
+                + "total REAL, "
+                + "salaire REAL, "
+                + "aides REAL, "
+                + "autoEntreprise REAL, "
+                + "revenusPassifs REAL, "
+                + "autres REAL"
+                + ");";
+                
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute(sqlExpenses);
+            stmt.execute(sqlIncomes);
             logger.info("Structure de la base de données créée/vérifiée avec succès");
         } catch (SQLException e) {
             logger.error("Erreur lors de l'initialisation de la base de données", e);
@@ -209,6 +224,131 @@ public class DatabaseManager {
             
         } catch (SQLException e) {
             logger.error("Erreur lors de la suppression de la dépense", e);
+            return false;
+        }
+    }
+
+    // Méthodes pour gérer les revenus
+    public static List<Income> getAllIncomes() {
+        logger.info("Chargement de tous les revenus depuis la base de données");
+        List<Income> incomes = new ArrayList<>();
+        
+        String sql = "SELECT * FROM incomes ORDER BY periode";
+        
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                Income income = new Income(
+                    rs.getString("periode"),
+                    rs.getDouble("total"),
+                    rs.getDouble("salaire"),
+                    rs.getDouble("aides"),
+                    rs.getDouble("autoEntreprise"),
+                    rs.getDouble("revenusPassifs"),
+                    rs.getDouble("autres")
+                );
+                income.setId(rs.getInt("id"));
+                incomes.add(income);
+            }
+            
+            logger.info("Chargement terminé: {} revenus trouvés", incomes.size());
+        } catch (SQLException e) {
+            logger.error("Erreur lors du chargement des revenus", e);
+        }
+        
+        return incomes;
+    }
+
+    public static boolean saveIncome(Income income) {
+        logger.info("Sauvegarde d'un revenu pour la période: {}", income.getPeriode());
+        
+        String sql = "INSERT INTO incomes (periode, total, salaire, aides, autoEntreprise, "
+                + "revenusPassifs, autres) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, income.getPeriode());
+            pstmt.setDouble(2, income.getTotal());
+            pstmt.setDouble(3, income.getSalaire());
+            pstmt.setDouble(4, income.getAides());
+            pstmt.setDouble(5, income.getAutoEntreprise());
+            pstmt.setDouble(6, income.getRevenusPassifs());
+            pstmt.setDouble(7, income.getAutres());
+            
+            int affectedRows = pstmt.executeUpdate();
+            
+            if (affectedRows > 0) {
+                logger.info("Revenu sauvegardé avec succès");
+                return true;
+            } else {
+                logger.warn("Aucune ligne ajoutée lors de la sauvegarde du revenu");
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            logger.error("Erreur lors de la sauvegarde du revenu", e);
+            return false;
+        }
+    }
+
+    public static boolean deleteIncome(Income income) {
+        logger.info("Suppression d'un revenu pour la période: {}", income.getPeriode());
+        
+        // Si l'ID est défini, on supprime par ID
+        if (income.getId() > 0) {
+            return deleteIncomeById(income.getId());
+        }
+        
+        // Sinon, on supprime par période (moins fiable si plusieurs revenus pour la même période)
+        String sql = "DELETE FROM incomes WHERE periode = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, income.getPeriode());
+            
+            int affectedRows = pstmt.executeUpdate();
+            
+            if (affectedRows > 0) {
+                logger.info("Revenu supprimé avec succès");
+                return true;
+            } else {
+                logger.warn("Aucune ligne supprimée");
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            logger.error("Erreur lors de la suppression du revenu", e);
+            return false;
+        }
+    }
+
+    private static boolean deleteIncomeById(int id) {
+        logger.info("Suppression d'un revenu avec l'ID: {}", id);
+        
+        String sql = "DELETE FROM incomes WHERE id = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, id);
+            
+            int affectedRows = pstmt.executeUpdate();
+            
+            if (affectedRows > 0) {
+                logger.info("Revenu supprimé avec succès");
+                return true;
+            } else {
+                logger.warn("Aucune ligne supprimée");
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            logger.error("Erreur lors de la suppression du revenu", e);
             return false;
         }
     }

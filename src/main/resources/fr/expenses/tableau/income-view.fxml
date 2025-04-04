@@ -3,28 +3,27 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.expenses.tableau.HelloController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="fr.expenses.tableau.IncomeController">
   <top>
     <VBox>
       <MenuBar>
         <menus>
           <Menu text="Navigation">
             <items>
-              <MenuItem text="Tableau des dépenses" onAction="#onTableauMenuClick"/>
+              <MenuItem text="Tableau des dépenses" onAction="#onTableauDepensesMenuClick"/>
               <MenuItem text="Statistiques" onAction="#onStatsMenuClick"/>
               <MenuItem text="Revenus" onAction="#onRevenusMenuClick"/>
-              <!-- <MenuItem text="Ajouter une dépense" onAction="#onAddExpenseMenuClick"/> -->
             </items>
           </Menu>
           <!-- <Menu text="Options">
@@ -44,9 +43,8 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
       </padding>
 
-      <Label text="Tableau récapitulatif des dépenses"
-             style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: blue;"
-             contentDisplay="LEFT">
+      <Label text="Tableau récapitulatif des revenus"
+             style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #00598C;">
         <graphic>
           <ImageView fitHeight="24.0" fitWidth="24.0">
             <image>
@@ -56,16 +54,14 @@
         </graphic>
       </Label>
 
-      <TableView fx:id="expenseTable" stylesheets="@style.css" prefHeight="300" VBox.vgrow="ALWAYS">
+      <TableView fx:id="incomeTable" stylesheets="@style.css" prefHeight="300" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn text="Période" fx:id="periodeColumn"/>
           <TableColumn text="Total" fx:id="totalColumn"/>
-          <TableColumn text="Logement" fx:id="logementColumn"/>
-          <TableColumn text="Nourriture" fx:id="nourritureColumn"/>
-          <TableColumn text="Sorties" fx:id="sortiesColumn"/>
-          <TableColumn text="Voiture/Transport" fx:id="voitureTransportColumn"/>
-          <TableColumn text="Voyage" fx:id="voyageColumn"/>
-          <TableColumn text="Impôts" fx:id="impotsColumn"/>
+          <TableColumn text="Salaire" fx:id="salaireColumn"/>
+          <TableColumn text="Aides" fx:id="aidesColumn"/>
+          <TableColumn text="Auto-entreprise" fx:id="autoEntrepriseColumn"/>
+          <TableColumn text="Revenus passifs" fx:id="revenusPassifsColumn"/>
           <TableColumn text="Autres" fx:id="autresColumn"/>
         </columns>
       </TableView>
@@ -76,4 +72,4 @@
       </HBox>
     </VBox>
   </center>
-</BorderPane>
+</BorderPane> 
